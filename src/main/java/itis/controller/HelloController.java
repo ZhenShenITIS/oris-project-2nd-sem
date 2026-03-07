@@ -23,8 +23,5 @@ public class HelloController {
         return helloService.sayHello(name);
     }
     
-    @GetMapping(value = "/users", produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserDto> getAllUsers() {
-        return userService.findAll();
-    }
+
 }

@@ -14,6 +14,10 @@ val hibernateVersion: String by project
 val postgresVersion: String by project
 val freemarkerVersion: String by project
 val hikariVersion: String by project
+val springDataVersion: String by project
+val lombokVersion: String by project
+val logbackVersion: String by project
+val jacksonVersion: String by project
 
 repositories {
     mavenCentral()
@@ -30,10 +34,11 @@ dependencies {
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("org.freemarker:freemarker:$freemarkerVersion")
     implementation("com.zaxxer:HikariCP:$hikariVersion")
-    implementation("ch.qos.logback:logback-classic:1.5.16")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")
-    compileOnly("org.projectlombok:lombok:1.18.36")
-    annotationProcessor("org.projectlombok:lombok:1.18.36")
+    implementation("org.springframework.data:spring-data-jpa:${springDataVersion}")
+    implementation("ch.qos.logback:logback-classic:${logbackVersion}")
+    implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
+    compileOnly("org.projectlombok:lombok:${lombokVersion}")
+    annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
 //    testImplementation(platform("org.junit:junit-bom:5.10.0"))
 //    testImplementation("org.junit.jupiter:junit-jupiter")
 }

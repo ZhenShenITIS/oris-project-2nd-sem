@@ -4,7 +4,7 @@ import itis.dto.UserDto;
 import itis.model.User;
 
 public class UserMapper {
-    public static User unMap(UserDto userDto) {
+    public static User map(UserDto userDto) {
         return User
                 .builder()
                 .id(userDto.id())

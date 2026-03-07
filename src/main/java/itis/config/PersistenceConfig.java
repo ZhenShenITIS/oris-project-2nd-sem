@@ -7,11 +7,14 @@ import org.hibernate.cfg.HikariCPSettings;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
 import org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.orm.jpa.JpaTransactionManager;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor;
 import org.springframework.orm.jpa.vendor.Database;
@@ -25,6 +28,7 @@ import java.util.Properties;
 
 @Configuration
 @PropertySource("classpath:persistence.properties")
+@EnableJpaRepositories("itis.repository")
 @EnableTransactionManagement
 public class PersistenceConfig implements EnvironmentAware {
     private Environment environment;
@@ -78,7 +82,7 @@ public class PersistenceConfig implements EnvironmentAware {
     }
 
 
-    @Bean
+    //@Bean
     public LocalSessionFactoryBean sessionFactory(DataSource dataSource) throws IOException {
         LocalSessionFactoryBean sessionFactoryBean = new LocalSessionFactoryBean();
         sessionFactoryBean.setDataSource(dataSource);
@@ -92,9 +96,14 @@ public class PersistenceConfig implements EnvironmentAware {
 
 
 
+//    @Bean
+//    public PlatformTransactionManager transactionManager (LocalSessionFactoryBean sessionFactory) {
+//        return new HibernateTransactionManager(sessionFactory.getObject());
+//    }
+
     @Bean
-    public PlatformTransactionManager transactionManager (LocalSessionFactoryBean sessionFactory) {
-        return new HibernateTransactionManager(sessionFactory.getObject());
+    public PlatformTransactionManager transactionManager(EntityManagerFactory entityManagerFactory) {
+        return new JpaTransactionManager(entityManagerFactory);
     }
 
 }
