@@ -2,10 +2,14 @@ package itis.service;
 
 import itis.dto.UserDto;
 import itis.mapper.UserMapper;
+import itis.model.Role;
 import itis.model.User;
+import itis.repository.RoleRepository;
 import itis.repository.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -16,6 +20,8 @@ public class UserService {
 
 
     private final UserJpaRepository userJpaRepository;
+    private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     public List<UserDto> findAll() {
         return userJpaRepository.findAll().stream().map(UserMapper::map).toList();
@@ -43,4 +49,21 @@ public class UserService {
     }
 
 
+    @Transactional
+    public void registerNewUser(String username, String rawPassword) {
+        if (userJpaRepository.findByName(username).isPresent()) {
+            throw new IllegalArgumentException("Пользователь с таким именем уже существует");
+        }
+
+        Role userRole = roleRepository.findByName("USER")
+                .orElseThrow(() -> new RuntimeException("Роль USER не найдена в БД"));
+
+        User user = User.builder()
+                .name(username)
+                .password(passwordEncoder.encode(rawPassword))
+                .roles(List.of(userRole))
+                .build();
+
+        userJpaRepository.save(user);
+    }
 }

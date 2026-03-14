@@ -18,6 +18,7 @@ val springDataVersion: String by project
 val lombokVersion: String by project
 val logbackVersion: String by project
 val jacksonVersion: String by project
+val springSecurityVersion: String by project
 
 repositories {
     mavenCentral()
@@ -29,12 +30,17 @@ dependencies {
     implementation("org.springframework:spring-orm:$springVersion")
     implementation("org.springframework:spring-context-support:$springVersion")
 //    implementation("jakarta.servlet:jakarta.servlet-api:$jakartaVersion")
+
     providedCompile("jakarta.servlet:jakarta.servlet-api:$jakartaVersion")
     implementation("org.hibernate.orm:hibernate-core:$hibernateVersion")
     implementation("org.postgresql:postgresql:$postgresVersion")
     implementation("org.freemarker:freemarker:$freemarkerVersion")
     implementation("com.zaxxer:HikariCP:$hikariVersion")
     implementation("org.springframework.data:spring-data-jpa:${springDataVersion}")
+    implementation("org.springframework.security:spring-security-core:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-web:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-config:${springSecurityVersion}")
+    implementation("org.springframework.security:spring-security-taglibs:${springSecurityVersion}")
     implementation("ch.qos.logback:logback-classic:${logbackVersion}")
     implementation("com.fasterxml.jackson.core:jackson-databind:${jacksonVersion}")
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
