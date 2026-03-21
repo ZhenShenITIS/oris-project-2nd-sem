@@ -22,36 +22,16 @@ import org.springframework.security.web.SecurityFilterChain;
 public class SecurityConfig {
 
 
-//    @Bean
-//    @SuppressWarnings("deprecation")
-//    public AuthenticationManager authenticationManager(HttpSecurity http, UserDetailsService userDetailsService) throws Exception {
-//        return http.getSharedObject(AuthenticationManagerBuilder.class)
-//                .userDetailsService(userDetailsService)
-//                .passwordEncoder(new BCryptPasswordEncoder())
-//                .and().build();
-//    }
-
-//
-//    @Bean
-//    public SecurityFilterChain securityFilterChain (HttpSecurity httpSecurity) throws Exception{
-//        httpSecurity.authorizeHttpRequests(a -> a
-//                        .requestMatchers("/").permitAll()
-//                        .requestMatchers("/hello").hasAnyAuthority("USER", "ADMIN")
-//                        .requestMatchers("/admin/**").hasAnyAuthority("ADMIN")
-//                        .anyRequest()
-//                        .authenticated())
-//                .formLogin(Customizer.withDefaults())
-//                .httpBasic(Customizer.withDefaults());
-//        return httpSecurity.build();
-//    }
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(a -> a
-                        .requestMatchers("/", "/register").permitAll()
-                        .requestMatchers("/hello").hasAuthority("USER")
+                        .requestMatchers("/", "/register", "/notes/public").permitAll()
+                        .requestMatchers("/hello", "/notes/**").hasAuthority("USER")
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
                         .anyRequest().authenticated())
+                .csrf(csrf -> csrf
+                        .ignoringRequestMatchers("/admin/**")
+                )
                 .formLogin(Customizer.withDefaults())
                 .httpBasic(Customizer.withDefaults());
         return httpSecurity.build();
