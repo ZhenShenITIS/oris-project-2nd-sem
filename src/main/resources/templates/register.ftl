@@ -17,6 +17,10 @@
         <input type="text" id="username" name="username" required />
     </div>
     <div>
+        <label for="email">Почта:</label>
+        <input type="email" id="email" name="email" required />
+    </div>
+    <div>
         <label for="password">Пароль:</label>
         <input type="password" id="password" name="password" required />
     </div>

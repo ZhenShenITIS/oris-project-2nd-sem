@@ -2,27 +2,36 @@
 FROM gradle:8.5-jdk21 AS builder
 WORKDIR /app
 
-COPY build.gradle.kts settings.gradle.kts ./
-
+COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 COPY gradle/ ./gradle/
-COPY gradle.properties ./
 
 RUN --mount=type=cache,target=/home/gradle/.gradle \
     gradle dependencies --no-daemon
 
 COPY src ./src
+
 RUN --mount=type=cache,target=/home/gradle/.gradle \
     gradle build -x test --no-daemon
 
-RUN mkdir -p /app/exploded && \
-    cd /app/exploded && \
-    jar -xf /app/build/libs/*.war
+# 1. Переименовываем JAR-файл перед распаковкой, чтобы не зависеть от версии (1.0-SNAPSHOT)
+RUN cp build/libs/*.jar application.jar && \
+    java -Djarmode=tools -jar application.jar extract --layers --destination extracted
 
-FROM tomcat:10.1-jdk21
-WORKDIR /usr/local/tomcat
+# --- Runtime Stage ---
+FROM eclipse-temurin:21-jre-jammy
+WORKDIR /app
 
-COPY --from=builder /app/exploded/ webapps/ROOT/
+RUN groupadd -r spring && useradd -r -g spring spring
+USER spring:spring
 
+# 2. Копируем слои нового формата
+COPY --from=builder /app/extracted/dependencies/ ./
+COPY --from=builder /app/extracted/spring-boot-loader/ ./
+COPY --from=builder /app/extracted/snapshot-dependencies/ ./
+COPY --from=builder /app/extracted/application/ ./
 
+ENV JAVA_OPTS="-XX:+UseContainerSupport -XX:MaxRAMPercentage=75.0 -XX:+UseG1GC"
 EXPOSE 8080
-CMD ["catalina.sh", "run"]
+
+# 3. Запускаем "тонкий" JAR вместо JarLauncher
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar application.jar"]

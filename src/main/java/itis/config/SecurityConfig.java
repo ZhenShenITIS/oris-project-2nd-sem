@@ -25,9 +25,11 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception {
         httpSecurity.authorizeHttpRequests(a -> a
-                        .requestMatchers("/", "/register", "/notes/public").permitAll()
+
+                        .requestMatchers("/", "/register", "/notes/public", "/index", "/login", "register/success", "verification").permitAll()
                         .requestMatchers("/hello", "/notes/**").hasAuthority("USER")
                         .requestMatchers("/admin/**").hasAuthority("ADMIN")
+//                        .requestMatchers("/error/**", "/error").permitAll()
                         .anyRequest().authenticated())
                 .csrf(csrf -> csrf
                         .ignoringRequestMatchers("/admin/**")

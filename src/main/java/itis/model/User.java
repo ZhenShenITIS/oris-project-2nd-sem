@@ -36,7 +36,15 @@ public class User {
     @Column(nullable = false, unique = true)
     private String name;
 
+    @Column(nullable = false, unique = true)
+    private String email;
+
+    private String verificationCode;
+
     private String password;
+
+    @Builder.Default
+    private Boolean isVerified = false;
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
