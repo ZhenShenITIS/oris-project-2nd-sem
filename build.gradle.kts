@@ -1,8 +1,12 @@
+import java.util.*
+
 plugins {
     id("java")
 //    id("application")
     id("org.springframework.boot") version "3.4.4"
     id("io.spring.dependency-management") version "1.1.7"
+    // плагин
+    id("org.liquibase.gradle") version "2.2.2"
 
 }
 
@@ -45,10 +49,32 @@ dependencies {
 
     compileOnly("org.projectlombok:lombok:${lombokVersion}")
     annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
+    // стартер для ликвидбейза ->
+    implementation("org.liquibase:liquibase-core:4.33.0")
+    liquibaseRuntime("org.liquibase:liquibase-core:4.33.0")
+    liquibaseRuntime("org.postgresql:postgresql:$postgresVersion")
+    // библиотека для работы с аргументами командной строки пикокли ->
+    liquibaseRuntime("info.picocli:picocli:4.6.3")
 }
 
 tasks.test {
     useJUnitPlatform()
+}
+
+val props = Properties()
+props.load(file("src/main/resources/db/liquibase.properties").inputStream())
+
+
+liquibase {
+    activities.register("main") {
+        arguments = mapOf(
+            "changeLogFile" to props.get("change-log-file"),
+            "url" to props.get("url"),
+            "username" to props.get("username"),
+            "password" to props.get("password"),
+            "driver" to props.get("driver-class-name")
+        )
+    }
 }
 
 tasks.named<Jar>("jar") {

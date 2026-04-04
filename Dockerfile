@@ -4,6 +4,7 @@ WORKDIR /app
 
 COPY build.gradle.kts settings.gradle.kts gradle.properties ./
 COPY gradle/ ./gradle/
+COPY src/main/resources/db ./src/main/resources/db
 
 RUN --mount=type=cache,target=/home/gradle/.gradle \
     gradle dependencies --no-daemon

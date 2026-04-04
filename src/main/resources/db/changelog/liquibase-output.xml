@@ -1,0 +1,62 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="zhenshen (generated)" id="1775285723769-1">
+        <createTable tableName="users">
+            <column autoIncrement="true" name="id" startWith="10" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="users_pkey"/>
+            </column>
+            <column name="name" type="VARCHAR"/>
+            <column name="email" type="VARCHAR"/>
+            <column name="password" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-2">
+        <createTable tableName="admin">
+            <column name="admin" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-3">
+        <createTable tableName="genre">
+            <column name="id" type="INTEGER">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="genre_pk"/>
+            </column>
+            <column name="name" type="VARCHAR"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-4">
+        <addUniqueConstraint columnNames="email" constraintName="users_email_key" tableName="users"/>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-5">
+        <addUniqueConstraint columnNames="admin" constraintName="admin_pk" tableName="admin"/>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-6">
+        <addUniqueConstraint columnNames="name" constraintName="genre_pk_2" tableName="genre"/>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-7">
+        <createTable tableName="anime">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="anime_pk"/>
+            </column>
+            <column name="title" type="VARCHAR"/>
+            <column name="picture_path" type="VARCHAR"/>
+            <column name="synopsis" type="VARCHAR"/>
+            <column name="rank" type="INTEGER"/>
+            <column name="score" type="FLOAT8"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-8">
+        <createTable tableName="anime_genre">
+            <column name="anime_id" type="BIGINT"/>
+            <column name="genre_id" type="INTEGER"/>
+        </createTable>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-9">
+        <addForeignKeyConstraint baseColumnNames="admin" baseTableName="admin" constraintName="admin_users_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="users" validate="true"/>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-10">
+        <addForeignKeyConstraint baseColumnNames="anime_id" baseTableName="anime_genre" constraintName="anime_genre_anime_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="anime" validate="true"/>
+    </changeSet>
+    <changeSet author="zhenshen (generated)" id="1775285723769-11">
+        <addForeignKeyConstraint baseColumnNames="genre_id" baseTableName="anime_genre" constraintName="anime_genre_genre_id_fk" deferrable="false" initiallyDeferred="false" onDelete="NO ACTION" onUpdate="NO ACTION" referencedColumnNames="id" referencedTableName="genre" validate="true"/>
+    </changeSet>
+</databaseChangeLog>
