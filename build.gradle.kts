@@ -7,6 +7,7 @@ plugins {
     id("io.spring.dependency-management") version "1.1.7"
     // плагин
     id("org.liquibase.gradle") version "2.2.2"
+    id("jacoco")
 
 }
 
@@ -55,10 +56,57 @@ dependencies {
     liquibaseRuntime("org.postgresql:postgresql:$postgresVersion")
     // библиотека для работы с аргументами командной строки пикокли ->
     liquibaseRuntime("info.picocli:picocli:4.6.3")
+
+    // тесты ->
+    testImplementation("org.springframework.boot:spring-boot-starter-test")
+    // sesure тесты ->
+    testImplementation("org.springframework.security:spring-security-test")
+    // мокито ->
+//    testImplementation("org.junit.jupiter:junit-jupiter-engine:5.14.0")
+//    testImplementation("org.junit.jupiter:junit-jupiter-api:5.14.0")
+//    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.14.0")
 }
 
 tasks.test {
     useJUnitPlatform()
+    finalizedBy(tasks.jacocoTestReport)
+}
+
+//task junit
+tasks.withType<Test>{
+    useJUnitPlatform()
+}
+
+tasks.jacocoTestReport{
+    dependsOn(tasks.test)
+    reports {
+        xml.required.set(false)
+        html.required.set(true)
+        csv.required.set(false)
+        html.outputLocation.set(layout.buildDirectory.dir("jacocoHtml"))
+    }
+    classDirectories.setFrom(
+        files(classDirectories.files.map {
+            fileTree(it) {
+                exclude(jacocoExcludes)
+            }
+        })
+    )
+}
+
+jacoco {
+    toolVersion = "0.8.12"
+    reportsDirectory.set(layout.buildDirectory.dir("jacoco"))
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+            limit {
+                minimum = "0.10".toBigDecimal()
+            }
+        }
+    }
 }
 
 val props = Properties()
@@ -76,6 +124,13 @@ liquibase {
         )
     }
 }
+
+val jacocoExcludes = listOf(
+    "**/itis/dto/**",
+    "**/itis/model/**",
+    "**/itis/config/**",
+    "**/itis/repository/**"
+)
 
 tasks.named<Jar>("jar") {
     enabled = false
