@@ -41,9 +41,9 @@ mail:
 
 logging:
   level:
-
     org:
       springframework:
         security: WARN
+        web: WARN
+      hibernate: WARN
       liquibase: DEBUG
-
